@@ -1,443 +1,409 @@
-# <a href="https://palabra.ai"><img src="https://avatars.githubusercontent.com/u/199107821?s=32" alt="Palabra AI" align="center"></a> Palabra AI Java SDK
+# Palabra AI Java SDK
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/PalabraAI/palabra-ai-java/ci.yml?branch=main&label=build)](https://github.com/PalabraAI/palabra-ai-java/actions)
-[![Coverage](https://codecov.io/gh/PalabraAI/palabra-ai-java/branch/main/graph/badge.svg)](https://codecov.io/gh/PalabraAI/palabra-ai-java)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/ai.palabra/palabra-ai-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/ai.palabra/palabra-ai-java)
-[![Java Version](https://img.shields.io/badge/Java-17%2B-orange)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Maven Central](https://img.shields.io/maven-central/v/ai.palabra/palabra-ai-java)](https://search.maven.org/artifact/ai.palabra/palabra-ai-java)
+[![Java](https://img.shields.io/badge/Java-17%2B-blue.svg)](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/PalabraAI/palabra-ai-java/ci.yml?branch=main)](https://github.com/PalabraAI/palabra-ai-java/actions)
 
-🌍 **Java SDK for Palabra AI's real-time speech-to-speech translation API**  
-🚀 Break down language barriers and enable seamless communication across 25+ languages
+Real-time speech-to-speech translation SDK for Java applications, powered by Palabra AI's advanced translation API.
 
-## Overview 📋
+## Features
 
-🎯 **The Palabra AI Java SDK provides a high-level API for integrating real-time speech-to-speech translation into your Java applications.**
+- **Real-time Translation**: Stream audio and receive translations with minimal latency
+- **Voice Cloning**: Maintain speaker's voice characteristics across languages
+- **25+ Languages**: Support for major world languages and regional variants
+- **Multiple I/O Adapters**: File, device (microphone/speaker), and buffer adapters
+- **WebSocket Streaming**: Efficient bi-directional audio streaming
+- **Advanced Configuration**: Fine-tune transcription, translation, and synthesis settings
+- **CLI Application**: Command-line interface for quick testing and integration
 
-✨ **What can Palabra.ai do?**
-- ⚡ Real-time speech-to-speech translation with near-zero latency
-- 🎙️ Auto voice cloning - speak any language in YOUR voice
-- 🔄 Two-way simultaneous translation for live discussions
-- 🚀 Developer API/SDK for building your own apps
-- 🎯 Works everywhere - applications, services, any Java platform
-- 🔒 Zero data storage - your conversations stay private
+## Requirements
 
-🔧 **This SDK focuses on making real-time translation simple and accessible:**
-- 🛡️ Uses WebSocket protocol under the hood
-- ⚡ Abstracts away all complexity
-- 🎮 Simple configuration with source/target languages
-- 🎤 Supports multiple input/output adapters (microphones, speakers, files, buffers)
+- Java 17 or higher
+- Palabra AI API credentials ([Sign up](https://palabra.ai))
 
-📊 **How it works:**
-1. 🎤 Configure input/output adapters
-2. 🔄 SDK handles the entire pipeline
-3. 🎯 Automatic transcription, translation, and synthesis
-4. 🔊 Real-time audio stream ready for playback
+## Installation
 
-💡 **All with just a few lines of code!**
+### Maven
 
-## Installation 📦
-
-### Gradle 📦
-```gradle
-dependencies {
-    implementation 'ai.palabra:palabra-ai-java:0.1.0'
-}
-```
-
-### Maven 📦
 ```xml
 <dependency>
     <groupId>ai.palabra</groupId>
     <artifactId>palabra-ai-java</artifactId>
-    <version>0.1.0</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
-## Quick Start 🚀
+### Gradle
 
-### Real-time microphone translation 🎤
-
-```java
-import ai.palabra.*;
-import ai.palabra.adapter.*;
-
-PalabraAI client = new PalabraAI("your-client-id", "your-client-secret");
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .targetLang(Language.ES_MX)
-    .reader(new DeviceReader())  // Microphone
-    .writer(new DeviceWriter())  // Speakers
-    .build();
-client.run(config);
+```gradle
+dependencies {
+    implementation 'ai.palabra:palabra-ai-java:1.0.0'
+}
 ```
 
-⚙️ **Set your API credentials as environment variables:**
-```bash
-export PALABRA_CLIENT_ID="your-client-id"
-export PALABRA_CLIENT_SECRET="your-client-secret"
-```
-
-## Examples 💡
-
-### File-to-file translation 📁
-
-```java
-import ai.palabra.*;
-import ai.palabra.adapter.*;
-
-PalabraAI client = new PalabraAI("your-client-id", "your-client-secret");
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .targetLang(Language.ES_MX)
-    .reader(new FileReader("input.wav"))
-    .writer(new FileWriter("output.wav"))
-    .build();
-client.run(config);
-```
-
-### Multiple target languages 🌐
-
-```java
-import ai.palabra.*;
-import ai.palabra.adapter.*;
-
-PalabraAI client = new PalabraAI("your-client-id", "your-client-secret");
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .reader(new FileReader("presentation.mp3"))
-    .targetLang(Language.ES_MX, new FileWriter("spanish.wav"))
-    .targetLang(Language.FR, new FileWriter("french.wav"))
-    .targetLang(Language.DE, new FileWriter("german.wav"))
-    .build();
-client.run(config);
-```
-
-### Device-based translation (Live Microphone) 🎤
-
-```java
-import ai.palabra.*;
-import ai.palabra.adapter.*;
-
-PalabraAI client = new PalabraAI("your-client-id", "your-client-secret");
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .targetLang(Language.FR)
-    .reader(new DeviceReader())  // Microphone
-    .writer(new DeviceWriter())  // Speakers
-    .build();
-client.run(config);
-```
-
-### Asynchronous processing ⚡
-
-```java
-import java.util.concurrent.CompletableFuture;
-
-CompletableFuture<Void> translation = client.runAsync(config);
-translation.thenRun(() -> System.out.println("Translation completed"));
-```
-
-### Using buffers 💾
-
-```java
-import ai.palabra.*;
-import ai.palabra.adapter.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-byte[] audioBytes = Files.readAllBytes(Paths.get("input.wav"));
-BufferWriter outputBuffer = new BufferWriter();
-
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .targetLang(Language.ES_MX)
-    .reader(new BufferReader(audioBytes))
-    .writer(outputBuffer)
-    .build();
-
-client.run(config);
-byte[] translatedAudio = outputBuffer.getBytes();
-```
-
-### Standalone Examples (Ready to Run) 🎯
-- **NanoExample.java** - Minimal WebSocket client without SDK dependencies
-- **SDKExample.java** - Comprehensive SDK usage with all features
-
-Both examples are self-contained and can be run with simple compilation commands. See the [examples README](examples/README.md) for detailed usage instructions and helper scripts.
+### Building from Source
 
 ```bash
-# Set environment variables
-export PALABRA_CLIENT_ID="your-client-id"
-export PALABRA_CLIENT_SECRET="your-client-secret"
-
-# Run using helper scripts (recommended)
-cd examples
-./setup.sh                    # Check environment
-./run_nano.sh                 # Run minimal WebSocket example
-./run_sdk.sh                  # Run full SDK example
-
-# Or compile and run manually
-cd examples
-javac -cp ".:lib/*" NanoExample.java
-java -cp ".:lib/*" NanoExample
-```
-
-## I/O Adapters & Mixing 🔌
-
-### Available adapters 🛠️
-
-🎯 **The Palabra AI Java SDK provides flexible I/O adapters that can be combined to:**
-
-- 📁 **FileReader/FileWriter**: Read from and write to audio files (WAV, MP3, OGG formats)
-- 🎤 **DeviceReader/DeviceWriter**: Use microphones and speakers directly
-- 💾 **BufferReader/BufferWriter**: Work with in-memory audio buffers
-
-### Mixing examples 🎨
-
-🔄 **Combine any input adapter with any output adapter:**
-
-#### 🎤➡️📁 Microphone to file - record translations
-```java
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .targetLang(Language.ES_MX)
-    .reader(new DeviceReader())
-    .writer(new FileWriter("recording_es.wav"))
-    .build();
-```
-
-#### 📁➡️🔊 File to speaker - play translations
-```java
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .targetLang(Language.ES_MX)
-    .reader(new FileReader("presentation.mp3"))
-    .writer(new DeviceWriter())
-    .build();
-```
-
-#### 🎤➡️🔊📁 Microphone to multiple outputs
-```java
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .reader(new DeviceReader())
-    .targetLang(Language.ES_MX, new DeviceWriter())       // Play Spanish through speaker
-    .targetLang(Language.ES_MX, new FileWriter("spanish.wav"))  // Save Spanish to file
-    .targetLang(Language.FR, new FileWriter("french.wav"))      // Save French to file
-    .build();
-```
-
-#### 💾➡️💾 Buffer to buffer - for integration
-```java
-byte[] inputAudio = getAudioFromSomewhere();
-BufferWriter outputBuffer = new BufferWriter();
-
-Config config = Config.builder()
-    .sourceLang(Language.EN_US)
-    .targetLang(Language.ES_MX)
-    .reader(new BufferReader(inputAudio))
-    .writer(outputBuffer)
-    .build();
-```
-
-## Features ✨
-
-### Real-time translation ⚡
-🎯 Translate audio streams in real-time with minimal latency  
-💬 Perfect for live conversations, conferences, and meetings
-
-### Voice cloning 🗣️
-🎭 Preserve the original speaker's voice characteristics in translations  
-⚙️ Enable voice cloning in the configuration
-
-### Type-safe Java API 🛡️
-🔧 Modern Java 17+ API with builder patterns and immutable configurations  
-🎯 Comprehensive error handling and logging support
-
-### Production-ready 🚀
-- **End-to-End Audio Translation**: Complete pipeline from input to output
-- **Production Error Handling**: Comprehensive exception hierarchy
-- **Multi-format Support**: File, buffer, and device adapters
-- **Async Processing**: Non-blocking translation operations
-- **CLI Interface**: Professional command-line tools
-
-## Supported Languages 🌍
-
-### Speech recognition languages 🎤
-🇸🇦 Arabic (AR), 🇨🇳 Chinese (ZH), 🇨🇿 Czech (CS), 🇩🇰 Danish (DA), 🇳🇱 Dutch (NL), 🇬🇧 English (EN), 🇫🇮 Finnish (FI), 🇫🇷 French (FR), 🇩🇪 German (DE), 🇬🇷 Greek (EL), 🇮🇱 Hebrew (HE), 🇭🇺 Hungarian (HU), 🇮🇹 Italian (IT), 🇯🇵 Japanese (JA), 🇰🇷 Korean (KO), 🇵🇱 Polish (PL), 🇵🇹 Portuguese (PT), 🇷🇺 Russian (RU), 🇪🇸 Spanish (ES), 🇹🇷 Turkish (TR), 🇺🇦 Ukrainian (UK)
-
-### Translation languages 🔄
-🇸🇦 Arabic (AR), 🇧🇬 Bulgarian (BG), 🇨🇳 Chinese Mandarin (ZH), 🇨🇿 Czech (CS), 🇩🇰 Danish (DA), 🇳🇱 Dutch (NL), 🇬🇧 English UK (EN_GB), 🇺🇸 English US (EN_US), 🇫🇮 Finnish (FI), 🇫🇷 French (FR), 🇩🇪 German (DE), 🇬🇷 Greek (EL), 🇮🇱 Hebrew (HE), 🇭🇺 Hungarian (HU), 🇮🇩 Indonesian (ID), 🇮🇹 Italian (IT), 🇯🇵 Japanese (JA), 🇰🇷 Korean (KO), 🇵🇱 Polish (PL), 🇵🇹 Portuguese (PT), 🇧🇷 Portuguese Brazilian (PT_BR), 🇷🇴 Romanian (RO), 🇷🇺 Russian (RU), 🇸🇰 Slovak (SK), 🇪🇸 Spanish (ES), 🇲🇽 Spanish Mexican (ES_MX), 🇸🇪 Swedish (SV), 🇹🇷 Turkish (TR), 🇺🇦 Ukrainian (UK), 🇻🇳 Vietnamese (VI)
-
-### Available language constants 📚
-
-```java
-import ai.palabra.Language;
-
-// English variants - 1.5+ billion speakers (including L2)
-Language.EN, Language.EN_AU, Language.EN_CA, Language.EN_GB, Language.EN_US
-
-// Chinese - 1.3+ billion speakers  
-Language.ZH_CN, Language.ZH_TW
-
-// Spanish variants - 500+ million speakers
-Language.ES, Language.ES_MX, Language.ES_ES, Language.ES_AR
-
-// Arabic variants - 400+ million speakers
-Language.AR
-
-// French variants - 280+ million speakers
-Language.FR, Language.FR_CA
-
-// Portuguese variants - 260+ million speakers
-Language.PT, Language.PT_BR, Language.PT_PT
-
-// Russian - 260+ million speakers
-Language.RU
-
-// Japanese & Korean - 200+ million speakers combined
-Language.JA, Language.KO
-
-// German and other European languages
-Language.DE, Language.IT, Language.PL, Language.NL
-// ... and many more
-```
-
-## Building 🔨
-
-### Using Make (Recommended) 🛠️
-
-The project includes a comprehensive Makefile with convenient commands:
-
-```bash
-# Show all available commands
-make help
-
-# Build everything (library + CLI)
-make build
-
-# Build just the CLI application
-make cli
-
-# Run tests
-make test
-
-# Generate documentation
-make docs
-
-# Clean build artifacts
-make clean
-
-# Show project status
-make status
-```
-
-### Using Gradle Directly 📦
-
-```bash
-# Build the library
+git clone https://github.com/PalabraAI/palabra-ai-java.git
+cd palabra-ai-java
 ./gradlew build
-
-# Run tests
-./gradlew test
-
-# Generate documentation
-./gradlew javadoc
 ```
 
-## CLI Usage 💻
+## Quick Start
 
-The library includes a comprehensive command-line interface for translation tasks:
+### Setting API Credentials
+
+Set your API credentials as environment variables:
 
 ```bash
-# Using Make
-make run-cli ARGS="--help"
-make run-cli ARGS="file input.wav -t ES_MX -o output.wav"
-make run-cli ARGS="device -s EN_US -t FR"
-make run-cli ARGS="device --list-devices"
-make run-cli ARGS="async input.wav -t ES_MX --audio-output --buffer-output"
-
-# Using shell script
-./build.sh run-cli "--help"
-./build.sh run-cli "file input.wav -t ES_MX -o output.wav"
-./build.sh run-cli "device --list-devices"
-
-# Using Gradle directly
-./gradlew run --args="--help"
-./gradlew run --args="file input.wav -t ES_MX -o output.wav"
-```
-
-### CLI Commands 🎯
-
-- **`file`** - Translate audio files with comprehensive options
-- **`device`** - Real-time translation using microphone and speakers  
-- **`async`** - Advanced async processing with multiple output formats
-- **`config`** - Manage CLI configuration and credentials
-
-## Troubleshooting 🔧
-
-### Authentication Problems 🔑
-```bash
-# Verify your credentials are set correctly
 export PALABRA_CLIENT_ID="your-client-id"
 export PALABRA_CLIENT_SECRET="your-client-secret"
-
-# Test with config command
-make run-cli ARGS="config list"
 ```
 
-### Audio Device Issues 🎤
+### Basic Usage
+
+```java
+import ai.palabra.*;
+import ai.palabra.adapter.*;
+
+public class TranslationExample {
+    public static void main(String[] args) {
+        // Initialize client with credentials
+        String clientId = System.getenv("PALABRA_CLIENT_ID");
+        String clientSecret = System.getenv("PALABRA_CLIENT_SECRET");
+        
+        PalabraAI client = new PalabraAI(clientId, clientSecret);
+        
+        // Configure translation
+        Config config = Config.builder()
+            .sourceLang(Language.EN_US)
+            .targetLang(Language.ES_MX)
+            .reader(new FileReader("input.wav"))
+            .writer(new FileWriter("output.wav"))
+            .build();
+        
+        // Run translation
+        client.run(config);
+    }
+}
+```
+
+## SDK Usage Examples
+
+### Real-time Microphone Translation
+
+Translate speech from microphone to speakers in real-time:
+
+```java
+String clientId = System.getenv("PALABRA_CLIENT_ID");
+String clientSecret = System.getenv("PALABRA_CLIENT_SECRET");
+
+Config config = Config.builder()
+    .sourceLang(Language.EN_US)
+    .targetLang(Language.JA)  // Japanese
+    .reader(new DeviceReader())  // Default microphone
+    .writer(new DeviceWriter())  // Default speakers
+    .build();
+
+// Run for 30 seconds
+PalabraAI client = new PalabraAI(clientId, clientSecret);
+CompletableFuture<Void> future = client.runAsync(config);
+
+Thread.sleep(30000);  // Translate for 30 seconds
+client.cancel();  // Cancel the translation
+future.join();
+```
+
+### File-to-File Translation
+
+Translate audio files between languages:
+
+```java
+String clientId = System.getenv("PALABRA_CLIENT_ID");
+String clientSecret = System.getenv("PALABRA_CLIENT_SECRET");
+
+PalabraAI client = new PalabraAI(clientId, clientSecret);
+
+Config config = Config.builder()
+    .sourceLang(Language.EN_US)
+    .targetLang(Language.FR)  // French
+    .reader(new FileReader("english_audio.wav"))
+    .writer(new FileWriter("french_audio.wav"))
+    .build();
+
+client.run(config);
+```
+
+### Buffer-based Translation
+
+Process audio from memory buffers:
+
+```java
+String clientId = System.getenv("PALABRA_CLIENT_ID");
+String clientSecret = System.getenv("PALABRA_CLIENT_SECRET");
+
+// Create buffers
+BufferReader reader = new BufferReader();
+BufferWriter writer = new BufferWriter();
+
+// Load audio data into reader
+byte[] audioData = Files.readAllBytes(Paths.get("audio.wav"));
+reader.addData(audioData);
+
+Config config = Config.builder()
+    .sourceLang(Language.DE)  // German
+    .targetLang(Language.EN_US)
+    .reader(reader)
+    .writer(writer)
+    .build();
+
+// Process translation
+PalabraAI client = new PalabraAI(clientId, clientSecret);
+client.run(config);
+
+// Get translated audio
+byte[] translatedAudio = writer.getData();
+Files.write(Paths.get("translated.wav"), translatedAudio);
+```
+
+### Multiple Target Languages
+
+Translate to multiple languages simultaneously:
+
+```java
+String clientId = System.getenv("PALABRA_CLIENT_ID");
+String clientSecret = System.getenv("PALABRA_CLIENT_SECRET");
+
+Config config = Config.builder()
+    .advanced()
+    .source(Language.EN_US, new FileReader("input.wav"))
+    .addTarget(Language.ES_MX, new FileWriter("spanish.wav"))
+    .addTarget(Language.FR, new FileWriter("french.wav"))  // French
+    .addTarget(Language.DE, new FileWriter("german.wav"))   // German
+    .build();
+
+PalabraAI client = new PalabraAI(clientId, clientSecret);
+client.run(config);
+```
+
+### Advanced Configuration
+
+Fine-tune translation parameters:
+
+```java
+import ai.palabra.config.*;
+
+String clientId = System.getenv("PALABRA_CLIENT_ID");
+String clientSecret = System.getenv("PALABRA_CLIENT_SECRET");
+
+PalabraAI client = new PalabraAI(clientId, clientSecret);
+
+Config config = Config.builder()
+    .advanced()
+    .source(SourceLangConfig.builder()
+        .language(Language.EN_US)
+        .reader(new FileReader("input.wav"))
+        .transcription(TranscriptionConfig.builder()
+            .denoise("auto")
+            .segmentConfirmationSilenceThreshold(0.8f)
+            .build())
+        .build())
+    .addTarget(TargetLangConfig.builder()
+        .language(Language.ES_MX)
+        .writer(new FileWriter("output.wav"))
+        .translation(TranslationConfig.builder()
+            .translationModel("advanced")
+            .speechGeneration(SpeechGenerationConfig.builder()
+                .voiceId("default_low")
+                .build())
+            .build())
+        .build())
+    .inputStream(InputStreamConfig.builder()
+        .audioFormat(AudioFormat.builder()
+            .format("pcm_s16le")
+            .sampleRate(24000)
+            .channels(1)
+            .build())
+        .build())
+    .build();
+
+client.run(config);
+```
+
+### Loading Configuration from JSON
+
+```java
+String clientId = System.getenv("PALABRA_CLIENT_ID");
+String clientSecret = System.getenv("PALABRA_CLIENT_SECRET");
+
+// Load from file
+Config config = Config.fromFile(Paths.get("config.json"));
+PalabraAI client = new PalabraAI(clientId, clientSecret);
+client.run(config);
+
+// Load from JSON string
+String json = """
+{
+    "source": {
+        "lang": "EN_US",
+        "transcription": {
+            "denoise": "auto"
+        }
+    },
+    "targets": [{
+        "lang": "ES_MX",
+        "translation": {
+            "speech_generation": {
+                "voice_id": "default_low"
+            }
+        }
+    }]
+}
+""";
+Config config2 = Config.fromJson(json);
+```
+
+## CLI Application
+
+The SDK includes a command-line interface for quick testing and integration.
+
+### Installation
+
+After building from source:
+
+```bash
+# Add to PATH (optional)
+export PATH=$PATH:/path/to/palabra-ai-java/build/install/palabra-cli/bin
+
+# Or use directly
+./build/install/palabra-cli/bin/palabra-cli --help
+```
+
+### CLI Commands
+
+#### File Translation
+
+Translate audio files:
+
+```bash
+# Basic translation
+./gradlew run --args="file --input audio.wav --target ES_MX --output spanish.wav"
+
+# With source language specification
+./gradlew run --args="file -i recording.wav -s EN_US -t FR_FR -o french.wav"
+
+# Using configuration file
+./gradlew run --args="file -i input.wav --config-file config.json -o output.wav"
+```
+
+#### Device Translation
+
+Real-time microphone translation:
+
 ```bash
 # List available audio devices
-make run-cli ARGS="device --list-devices"
+./gradlew run --args="device --list-devices"
 
-# Test audio system
-make run-cli ARGS="device -s EN_US -t ES_MX -d 5"
+# Translate for 30 seconds
+./gradlew run --args="device -s EN_US -t ES_MX -d 30"
+
+# With specific devices
+./gradlew run --args="device --input-device 0 --output-device 1 -t JA_JP -d 60"
 ```
 
-### Network Connectivity 🌐
-- Ensure your firewall allows WebSocket connections to `wss://api.palabra.ai`
-- Check that your network supports persistent WebSocket connections
-- For corporate networks, you may need to configure proxy settings
+#### Configuration Management
 
-## Development Status 🛠️
+Manage API credentials:
 
-### Current Status ✅
-- ✅ Core SDK functionality
-- ✅ GitHub Actions CI/CD
-- ✅ Java 17+ support with modern APIs
-- ✅ Maven Central distribution
-- ✅ Production-ready error handling
-- ✅ Comprehensive documentation
-- ⏳ Code coverage reporting (setup required)
+```bash
+# Set credentials
+./gradlew run --args="config --set"
 
-### Current Dev Roadmap 🗺️
-- ⏳ TODO: Global timeout support for long-running tasks
-- ⏳ TODO: Support for multiple source languages in a single run
-- ⏳ TODO: Enhanced audio device management
-- ⏳ TODO: Streaming audio processing improvements
+# Show current configuration
+./gradlew run --args="config --show"
 
-### Build Status 🏗️
-- 🧪 **Tests**: Running on Java 17+
-- 📦 **Release**: Automated releases to Maven Central
-- 📊 **Coverage**: Tests implemented, reporting setup needed
+# Clear stored credentials
+./gradlew run --args="config --clear"
+```
 
-## Requirements 📋
+## Supported Languages
 
-- 🚀 Java 17 or higher
-- 🔑 Palabra AI API credentials (get them at [palabra.ai](https://palabra.ai))
-- 🌐 Network connectivity for Palabra AI API access
-- 🎤 Audio device access for DeviceReader/DeviceWriter (optional)
+The SDK supports 25+ languages including:
 
-## Support 🤝
+- English (US, UK, AU, IN)
+- Spanish (ES, MX, AR)
+- French (FR, CA)
+- German (DE)
+- Italian (IT)
+- Portuguese (PT, BR)
+- Russian (RU)
+- Chinese (ZH_CN)
+- Japanese (JA_JP)
+- Korean (KO_KR)
+- Arabic (AR)
+- Hindi (HI_IN)
+- And more...
+
+Use the `Language` enum for type-safe language selection:
+
+```java
+Language.EN_US  // English (United States)
+Language.ES_MX  // Spanish (Mexico)
+Language.FR     // French
+Language.DE     // German
+Language.JA     // Japanese
+Language.KO     // Korean
+Language.ZH     // Chinese
+// ... etc
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
+# All tests (requires API credentials for integration tests)
+./gradlew test
+
+# Unit tests only
+./gradlew test --tests "*Test"
+
+# Integration tests (requires credentials)
+./gradlew test --tests "*IntegrationTest"
+
+# Run specific test class
+./gradlew test --tests "ai.palabra.PalabraAITest"
+
+# Run with detailed output
+./gradlew test --info
+```
+
+## Roadmap
+
+- [ ] Maven distribution
+- [ ] Quick start examples
+
+
+## Support
 
 - 📚 Documentation: [https://docs.palabra.ai](https://docs.palabra.ai)
 - 🐛 Issues: [GitHub Issues](https://github.com/PalabraAI/palabra-ai-java/issues)
 - 📧 Email: info@palabra.ai
 
-## License 📄
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+## Acknowledgments
+
+Built with:
+- [OkHttp](https://square.github.io/okhttp/) - HTTP & WebSocket client
+- [Jackson](https://github.com/FasterXML/jackson) - JSON processing
+- [Picocli](https://picocli.info/) - CLI framework
+- [SLF4J](https://www.slf4j.org/) - Logging facade
+
 
 ---
 

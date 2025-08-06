@@ -34,7 +34,6 @@ logs/
 
 # Java
 *.class
-*.jar
 *.war
 *.ear
 hs_err_pid*
@@ -68,13 +67,6 @@ buildNumber.properties
 .env.development.local
 .env.test.local
 .env.production.local
-
-# Audio test files
-*.wav
-*.mp3
-*.ogg
-*.m4a
-*.flac
 
 # Generated documentation
 docs/build/
