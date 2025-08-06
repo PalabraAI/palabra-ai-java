@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Console appender with UTF-8 encoding -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- File appender with UTF-8 encoding (optional) -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/palabra-client.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <charset>UTF-8</charset>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    
+    <!-- Root logger configuration -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <!-- Uncomment to also write to file -->
+        <!-- <appender-ref ref="FILE"/> -->
+    </root>
+    
+    <!-- Specific logger for TranscriptionMessage to ensure UTF-8 output -->
+    <logger name="ai.palabra.base.TranscriptionMessage" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+    
+    <!-- Specific logger for PalabraAI to ensure UTF-8 output -->
+    <logger name="ai.palabra.PalabraAI" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+</configuration>

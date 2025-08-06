@@ -1,0 +1,133 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        java-version: [17, 21]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK ${{ matrix.java-version }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java-version }}
+        distribution: 'temurin'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Run unit tests
+      run: ./gradlew test --exclude-task integrationTest
+      
+    - name: Run integration tests (with API secrets)
+      if: matrix.java-version == 17
+      env:
+        PALABRA_CLIENT_ID: ${{ secrets.PALABRA_CLIENT_ID }}
+        PALABRA_CLIENT_SECRET: ${{ secrets.PALABRA_CLIENT_SECRET }}
+      run: ./gradlew test --tests "*IntegrationTest*" --tests "*Integration*"
+      continue-on-error: true  # Don't fail the build if API is temporarily unavailable
+      
+    - name: Generate JaCoCo test coverage report
+      if: matrix.java-version == 17
+      run: ./gradlew jacocoTestReport
+      
+    - name: Upload coverage to Codecov
+      if: matrix.java-version == 17
+      uses: codecov/codecov-action@v3
+      with:
+        file: build/reports/jacoco/test/jacocoTestReport.xml
+        fail_ci_if_error: false
+        verbose: true
+        flags: unittests
+        name: codecov-umbrella
+      
+    - name: Generate test report
+      uses: dorny/test-reporter@v1
+      if: success() || failure()
+      with:
+        name: Gradle Tests (JDK ${{ matrix.java-version }})
+        path: build/test-results/test/*.xml
+        reporter: java-junit
+        
+    - name: Build
+      run: ./gradlew build
+      
+    - name: Upload build artifacts
+      if: matrix.java-version == 17
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts-jdk${{ matrix.java-version }}
+        path: |
+          build/libs/*.jar
+          build/distributions/*
+          build/reports/tests/test/
+
+  # Verify examples compile and are ready to run
+  examples:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'temurin'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Build project
+      run: ./gradlew build -x test
+      
+    - name: Test examples compilation
+      run: |
+        cd examples
+        # Test that examples compile without errors
+        javac -cp ".:lib/*" NanoExample.java
+        javac -cp ".:lib/*" SDKExample.java
+        echo "✅ All examples compile successfully"
+        
+    - name: Validate examples structure  
+      run: |
+        cd examples
+        # Verify all required files exist
+        [ -f NanoExample.java ] || exit 1
+        [ -f SDKExample.java ] || exit 1
+        [ -d lib ] || exit 1
+        [ -d audio ] || exit 1
+        [ -f setup.sh ] || exit 1
+        [ -f run_nano.sh ] || exit 1
+        [ -f run_sdk.sh ] || exit 1
+        echo "✅ Examples structure is valid"
