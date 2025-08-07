@@ -72,6 +72,15 @@ tasks.compileTestJava {
     options.release.set(17)
 }
 
+tasks.javadoc {
+    options.encoding = "UTF-8"
+    (options as StandardJavadocDocletOptions).apply {
+        charSet = "UTF-8"
+        docEncoding = "UTF-8"
+        addStringOption("Xdoclint:none", "-quiet")
+    }
+}
+
 // Application configuration for running the CLI
 application {
     mainClass.set("ai.palabra.cli.PalabraCLI")

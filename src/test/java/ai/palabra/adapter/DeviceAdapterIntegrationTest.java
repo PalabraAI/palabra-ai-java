@@ -99,6 +99,10 @@ public class DeviceAdapterIntegrationTest {
             assertTrue(deviceReader.isReady());
             assertTrue(deviceWriter.isReady());
             
+            // Give the capture thread time to start and make at least one read call
+            // This is especially important on Linux where thread scheduling can be different
+            Thread.sleep(100);
+            
             // Simulate audio passthrough
             CompletableFuture<Void> passthroughTask = CompletableFuture.runAsync(() -> {
                 try {
@@ -117,7 +121,12 @@ public class DeviceAdapterIntegrationTest {
             // Wait for completion
             passthroughTask.get(2, TimeUnit.SECONDS);
             
-            // Verify interactions
+            // Allow additional time for any pending read operations to complete
+            // This ensures the capture thread has processed at least one read cycle
+            Thread.sleep(50);
+            
+            // Verify interactions - the mock microphone should have been read from
+            // Note: Even if queue is full and data is dropped, read() should still be called
             verify(mockMicrophone, atLeast(1)).read(any(byte[].class), anyInt(), anyInt());
             
             // Check statistics
